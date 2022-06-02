@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:magdsoft_flutter_structure/data/local/cache_helper.dart';
 import 'package:magdsoft_flutter_structure/data/network/responses/login_response.dart';
 import 'package:magdsoft_flutter_structure/data/network/responses/register_response.dart';
@@ -8,7 +9,7 @@ class login_request {
       'https://magdsoft-internship.herokuapp.com/api/login';
 
   // send a post request to login api using dio helper
-  Future<bool> login(String email, String password) async {
+  Future<LoginResponse> login(String email, String password) async {
     var body = {
       'email': email,
       'password': password,
@@ -22,10 +23,9 @@ class login_request {
     if (loginResponse.status == 200) {
       // save to shared prefences with key islogedin
       await CacheHelper.sharedPreferences.setBool('islogedin', true);
-      return true;
     } else {
       await CacheHelper.sharedPreferences.setBool('islogedin', false);
-      return false;
     }
+    return loginResponse;
   }
 }

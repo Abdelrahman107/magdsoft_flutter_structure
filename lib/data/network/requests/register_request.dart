@@ -17,7 +17,7 @@ class RegisterRequest {
 // --form 'phone="01123226530"'
 
   // send a post request to register api using dio helper
-  Future<bool> register(
+  Future<RegisterResponse> register(
       String name, String email, String password, String phone) async {
     var body = {
       'name': name,
@@ -32,18 +32,13 @@ class RegisterRequest {
 
     var registerResponse = RegisterResponse.fromJson(response.data);
     if (registerResponse.status == 200) {
-      // save to shared prefences with key islogedin
-
       await CacheHelper.sharedPreferences.setBool('islogedin', true);
       await CacheHelper.sharedPreferences.setString('name', name);
       await CacheHelper.sharedPreferences.setString('email', email);
       await CacheHelper.sharedPreferences.setString('phone', phone);
-      print(response.data);
-
-      return true;
     } else {
       await CacheHelper.sharedPreferences.setBool('islogedin', false);
-      return false;
     }
+    return registerResponse;
   }
 }

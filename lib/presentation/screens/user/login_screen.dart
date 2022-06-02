@@ -1,10 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:magdsoft_flutter_structure/business_logic/user_cubit/login/login_cubit.dart';
+import 'package:magdsoft_flutter_structure/business_logic/user_cubit/login/login_state.dart';
 import 'package:magdsoft_flutter_structure/constants/theme.dart';
-import 'package:magdsoft_flutter_structure/data/network/requests/login_request.dart';
 import 'package:magdsoft_flutter_structure/presentation/widget/custom_button.dart';
-import 'package:magdsoft_flutter_structure/presentation/widget/toast.dart';
 
 class LoginScreen extends StatelessWidget {
   TextEditingController _emailController = TextEditingController();
@@ -130,39 +131,31 @@ class LoginScreen extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        InkWell(
-                          onTap: () {
-                            // navigate to register screen named
-                            print("in register");
-                            Navigator.pushNamed(context, '/register');
+                        BlocListener<LoginCubit, LoginState>(
+                          bloc: BlocProvider.of<LoginCubit>(context),
+                          listener: (context, state) {
+                            if (state is LoginSuccess) {
+                              Navigator.pushNamedAndRemoveUntil(
+                                  context, '/home', (route) => false);
+                            }
+
+                            if (state is LoginFailure) {
+                              Fluttertoast.showToast(
+                                  msg: state.message,
+                                  toastLength: Toast.LENGTH_SHORT,
+                                  gravity: ToastGravity.BOTTOM,
+                                  timeInSecForIosWeb: 1,
+                                  backgroundColor: Colors.red,
+                                  textColor: Colors.white,
+                                  fontSize: 16.0);
+                            }
                           },
-                          child: Container(
-                            width: MediaQuery.of(context).size.width * 0.3,
-                            height: MediaQuery.of(context).size.height * 0.06,
-                            alignment: Alignment.center,
-                            child: Text("Register",
-                                style:
-                                    const TextStyle(color: ThemeColor.white)),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              color: ThemeColor.blue,
-                            ),
-                          ),
-                        ),
-                        InkWell(
+                          child: InkWell(
                             onTap: () async {
                               if (_formKey.currentState!.validate()) {
-                                //login api
-                                var response = await login_request().login(
+                                context.read<LoginCubit>().login(
                                     _emailController.text,
                                     _passwordController.text);
-
-                                if (response == true) {
-                                  Navigator.pushNamed(context, '/home');
-                                } else {
-                                  // TOAST
-                                  showToast("Something went wrong");
-                                }
                               }
                             },
                             child: Container(
@@ -170,6 +163,27 @@ class LoginScreen extends StatelessWidget {
                               height: MediaQuery.of(context).size.height * 0.06,
                               alignment: Alignment.center,
                               child: Text("Login",
+                                  style:
+                                      const TextStyle(color: ThemeColor.white)),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                color: ThemeColor.blue,
+                              ),
+                            ),
+                          ),
+                        ),
+                        InkWell(
+                            onTap: () {
+                              // push and remove until
+
+                              Navigator.pushNamedAndRemoveUntil(
+                                  context, '/register', (route) => false);
+                            },
+                            child: Container(
+                              width: MediaQuery.of(context).size.width * 0.3,
+                              height: MediaQuery.of(context).size.height * 0.06,
+                              alignment: Alignment.center,
+                              child: Text("Register",
                                   style:
                                       const TextStyle(color: ThemeColor.white)),
                               decoration: BoxDecoration(

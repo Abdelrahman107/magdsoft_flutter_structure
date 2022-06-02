@@ -1,24 +1,35 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:magdsoft_flutter_structure/business_logic/user_cubit/register/register_cubit.dart';
+import 'package:magdsoft_flutter_structure/business_logic/user_cubit/register/register_state.dart';
 import 'package:magdsoft_flutter_structure/constants/theme.dart';
 import 'package:magdsoft_flutter_structure/data/local/cache_helper.dart';
 import 'package:magdsoft_flutter_structure/data/network/requests/register_request.dart';
 import 'package:magdsoft_flutter_structure/presentation/widget/custom_button.dart';
 import 'package:magdsoft_flutter_structure/presentation/widget/toast.dart';
 
-class RegisterScreen extends StatelessWidget {
+class RegisterScreen extends StatefulWidget {
+  RegisterScreen({Key? key}) : super(key: key);
+
+  @override
+  State<RegisterScreen> createState() => _RegisterScreenState();
+}
+
+class _RegisterScreenState extends State<RegisterScreen> {
   TextEditingController _emailController = TextEditingController();
+
   TextEditingController _passwordController = TextEditingController();
-  // full name and phone number
+
   TextEditingController _fullNameController = TextEditingController();
+
   TextEditingController _phoneNumberController = TextEditingController();
-  // confirm
+
   TextEditingController _confirmPasswordController = TextEditingController();
 
   final _formKey = GlobalKey<FormState>();
 
-  RegisterScreen({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -228,45 +239,47 @@ class RegisterScreen extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        InkWell(
-                          onTap: () async {
-                            // validate
-                            if (_formKey.currentState!.validate()) {
-                              // call register api
-                              print("in here");
-                              print(_emailController.text);
-                              print(_passwordController.text);
-                              print(_fullNameController.text);
-                              print(_phoneNumberController.text);
-                              var response = await RegisterRequest().register(
-                                  _fullNameController.text,
-                                  _emailController.text,
-                                  _passwordController.text,
-                                  _phoneNumberController.text);
-                              print(response);
-                              if (response == true) {
-                                var islogged = await CacheHelper
-                                    .sharedPreferences
-                                    .getBool("islogedin");
-                                if (islogged == true) {
-                                  Navigator.pushNamed(context, '/home');
-                                }
-                              } else {
-                                // toast
-                                showToast("Something went wrong");
-                              }
+                        BlocListener<RegisterCubit, RegisterState>(
+                          bloc: BlocProvider.of<RegisterCubit>(context),
+                          listener: (context, state) {
+                            if (state is RegisterSuccess) {
+                              Navigator.pushNamedAndRemoveUntil(
+                                  context, '/home', (route) => false);
+                            }
+
+                            if (state is RegisterFailure) {
+                              Fluttertoast.showToast(
+                                  msg: state.message,
+                                  toastLength: Toast.LENGTH_SHORT,
+                                  gravity: ToastGravity.BOTTOM,
+                                  timeInSecForIosWeb: 1,
+                                  backgroundColor: Colors.red,
+                                  textColor: Colors.white,
+                                  fontSize: 16.0);
                             }
                           },
-                          child: Container(
-                            width: MediaQuery.of(context).size.width * 0.3,
-                            height: MediaQuery.of(context).size.height * 0.06,
-                            alignment: Alignment.center,
-                            child: Text("Register",
-                                style:
-                                    const TextStyle(color: ThemeColor.white)),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              color: ThemeColor.blue,
+                          child: InkWell(
+                            onTap: () async {
+                              if (_formKey.currentState!.validate()) {
+                                context.read<RegisterCubit>().register(
+                                      _fullNameController.text,
+                                      _emailController.text,
+                                      _passwordController.text,
+                                      _phoneNumberController.text,
+                                    );
+                              }
+                            },
+                            child: Container(
+                              width: MediaQuery.of(context).size.width * 0.3,
+                              height: MediaQuery.of(context).size.height * 0.06,
+                              alignment: Alignment.center,
+                              child: Text("Register",
+                                  style:
+                                      const TextStyle(color: ThemeColor.white)),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                color: ThemeColor.blue,
+                              ),
                             ),
                           ),
                         ),
