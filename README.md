@@ -1,7 +1,7 @@
 # magdsoft_flutter_structure
 
-# demo
-![alt text](1654139502054.GIF)
+# demo: login, register,logout flow with cubit,dio, shared preferences
+![alt text](1654181881619.gif)
 
 magdsoft mobile application structure for flutter
 
