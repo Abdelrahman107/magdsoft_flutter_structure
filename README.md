@@ -1,5 +1,8 @@
 # magdsoft_flutter_structure
 
+# demo
+![alt text](1654139502054.GIF)
+
 magdsoft mobile application structure for flutter
 
 ## Getting Started
