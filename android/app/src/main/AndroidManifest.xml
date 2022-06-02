@@ -2,7 +2,6 @@
     package="com.example.magdsoft_flutter_structure">
    <application
         android:label="magdsoft_flutter_structure"
-        android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"

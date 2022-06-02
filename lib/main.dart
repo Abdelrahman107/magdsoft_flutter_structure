@@ -13,13 +13,12 @@ import 'package:magdsoft_flutter_structure/presentation/widget/toast.dart';
 import 'package:sizer/sizer.dart';
 import 'package:intl/intl.dart';
 
-
 late LocalizationDelegate delegate;
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   BlocOverrides.runZoned(
-        () async {
+    () async {
       DioHelper.init();
       await CacheHelper.init();
       final locale =
