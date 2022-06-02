@@ -42,6 +42,7 @@ class RegisterRequest {
 
       return true;
     } else {
+      await CacheHelper.sharedPreferences.setBool('islogedin', false);
       return false;
     }
   }

@@ -6,5 +6,5 @@ class ThemeColor {
   static const Color lightGrey = Color(0xFFECECEC);
   static const Color white = Color(0xFFFFFFFF);
   static const Color blue = Color(0xFF005DA3);
-  static const Color myRed = Color(0xFFAD002F);
+  static const Color rded = Color(0xFFAD002F);
 }

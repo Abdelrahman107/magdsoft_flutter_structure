@@ -5,6 +5,7 @@ import 'package:magdsoft_flutter_structure/constants/theme.dart';
 import 'package:magdsoft_flutter_structure/data/local/cache_helper.dart';
 import 'package:magdsoft_flutter_structure/data/network/requests/register_request.dart';
 import 'package:magdsoft_flutter_structure/presentation/widget/custom_button.dart';
+import 'package:magdsoft_flutter_structure/presentation/widget/toast.dart';
 
 class RegisterScreen extends StatelessWidget {
   TextEditingController _emailController = TextEditingController();
@@ -252,14 +253,7 @@ class RegisterScreen extends StatelessWidget {
                                 }
                               } else {
                                 // toast
-                                Fluttertoast.showToast(
-                                    msg: "Something went wrong",
-                                    toastLength: Toast.LENGTH_SHORT,
-                                    gravity: ToastGravity.BOTTOM,
-                                    timeInSecForIosWeb: 1,
-                                    backgroundColor: Colors.red,
-                                    textColor: Colors.white,
-                                    fontSize: 16.0);
+                                showToast("Something went wrong");
                               }
                             }
                           },

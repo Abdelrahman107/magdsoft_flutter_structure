@@ -1,7 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:magdsoft_flutter_structure/constants/theme.dart';
+import 'package:magdsoft_flutter_structure/data/network/requests/login_request.dart';
 import 'package:magdsoft_flutter_structure/presentation/widget/custom_button.dart';
+import 'package:magdsoft_flutter_structure/presentation/widget/toast.dart';
 
 class LoginScreen extends StatelessWidget {
   TextEditingController _emailController = TextEditingController();
@@ -59,29 +62,66 @@ class LoginScreen extends StatelessWidget {
                   child: Column(children: [
                     // make email  and password with validation in english
 
-                    CustomTextFormField(
+                    TextFormField(
                       controller: _emailController,
-                      hint: 'Email',
                       validator: (value) {
                         if (value!.isEmpty) {
-                          //
                           return 'Please enter your email';
                         }
                         return null;
                       },
+                      textAlign: TextAlign.left,
+                      cursorColor: Colors.black,
+                      decoration: InputDecoration(
+                        hintText: 'Email',
+                        hintStyle: const TextStyle(
+                          color: ThemeColor.darkGrey,
+                        ),
+                        fillColor: ThemeColor.lightGrey,
+                        filled: true,
+                        labelStyle: TextStyle(color: ThemeColor.darkGrey),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: ThemeColor.darkGrey),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: ThemeColor.lightGrey),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      keyboardType: TextInputType.emailAddress,
                     ),
                     SizedBox(
                       height: 20,
                     ),
-                    CustomTextFormField(
+                    TextFormField(
                       controller: _passwordController,
-                      hint: 'Password',
                       validator: (value) {
                         if (value!.isEmpty) {
                           return 'Please enter your password';
                         }
                         return null;
                       },
+                      textAlign: TextAlign.left,
+                      cursorColor: Colors.black,
+                      decoration: InputDecoration(
+                        hintText: 'Password',
+                        hintStyle: const TextStyle(
+                          color: ThemeColor.darkGrey,
+                        ),
+                        fillColor: ThemeColor.lightGrey,
+                        filled: true,
+                        labelStyle: TextStyle(color: ThemeColor.darkGrey),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: ThemeColor.darkGrey),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: ThemeColor.lightGrey),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      keyboardType: TextInputType.visiblePassword,
                     ),
                     // row with two button
                     SizedBox(
@@ -110,8 +150,20 @@ class LoginScreen extends StatelessWidget {
                           ),
                         ),
                         InkWell(
-                            onTap: () {
-                              if (_formKey.currentState!.validate()) {}
+                            onTap: () async {
+                              if (_formKey.currentState!.validate()) {
+                                //login api
+                                var response = await login_request().login(
+                                    _emailController.text,
+                                    _passwordController.text);
+
+                                if (response == true) {
+                                  Navigator.pushNamed(context, '/home');
+                                } else {
+                                  // TOAST
+                                  showToast("Something went wrong");
+                                }
+                              }
                             },
                             child: Container(
                               width: MediaQuery.of(context).size.width * 0.3,

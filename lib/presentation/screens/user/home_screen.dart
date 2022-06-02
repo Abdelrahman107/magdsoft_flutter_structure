@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:magdsoft_flutter_structure/constants/theme.dart';
 import 'package:magdsoft_flutter_structure/data/local/cache_helper.dart';
+import 'package:magdsoft_flutter_structure/presentation/widget/custom_button.dart';
 
 class HomeScreen extends StatefulWidget {
   // name,email,phone
@@ -37,6 +38,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       backgroundColor: ThemeColor.white,
       appBar: AppBar(
+        centerTitle: true,
         backgroundColor: ThemeColor.blue,
         title: Text('User Data'),
       ),
@@ -46,9 +48,44 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             Text(
               'Name: $name',
+              style: TextStyle(
+                fontSize: 30,
+                color: ThemeColor.blue,
+              ),
             ),
-            Text('Email: $email'),
-            Text('Phone: $phone'),
+            Text('Email: $email',
+                style: TextStyle(
+                  fontSize: 30,
+                  color: ThemeColor.blue,
+                )),
+            Text('Phone: $phone',
+                style: TextStyle(
+                  fontSize: 30,
+                  color: ThemeColor.blue,
+                )),
+
+            // make a button to logout
+            SizedBox(
+              height: 500,
+            ),
+            InkWell(
+                onTap: () {
+                  // push and remove until
+                  // set islogedin to false
+                  CacheHelper.sharedPreferences.setBool('islogedin', false);
+                  Navigator.pushNamedAndRemoveUntil(
+                      context, '/', (route) => false);
+                },
+                child: Container(
+                  width: MediaQuery.of(context).size.width * 0.3,
+                  height: MediaQuery.of(context).size.height * 0.06,
+                  alignment: Alignment.center,
+                  child: Text("Logout",
+                      style: const TextStyle(color: ThemeColor.white)),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: ThemeColor.rded),
+                )),
           ],
         ),
       ),
